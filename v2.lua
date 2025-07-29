@@ -35,11 +35,17 @@ Window:CreateHomeTab({
 	Icon = 1, -- By Default, The Icon Is The Home Icon. If You would like to change it to dashboard, replace the interger with 2
 })
 
--- player tab --
+local player = game.Players.LocalPlayer
 
+-- functions --
+local function tp(cf)
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cf
+end
+
+-- player tab --
 local playerTab = Window:CreateTab({
     Name = "Player Tab",
-    Icon = "view_in_ar",
+    Icon = "person",
     ImageSource = "Material",
     ShowTitle = true
 })
@@ -65,3 +71,42 @@ local JumpPowerSlider = playerTab:CreateSlider({
         game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
     end
 }, "Slider")
+
+-- blocks n props --
+
+local bapTab = Window:CreateTab({
+    Name = "Blocks N' Props",
+    Icon = "view_in_ar",
+    ImageSource = "Material",
+    ShowTitle = true
+})
+
+bapTab:CreateSection("Tower")
+
+local Button = bapTab:CreateButton({
+	Name = "Instant Win",
+	Description = nil, -- Creates A Description For Users to know what the button does (looks bad if you use it all the time),
+    	Callback = function()
+		if player.Team == game.Teams.Towers then
+			tp(workspace.Map.Classic.Button.CFrame)
+		end
+    	end
+})
+
+local Button = bapTab:CreateButton({
+	Name = "TP To Destroyer",
+	Description = nil, -- Creates A Description For Users to know what the button does (looks bad if you use it all the time),
+    	Callback = function()
+		if player.Team == game.Teams.Towers then
+			tp(workspace.Map.Classic.Shooter.PARTSPAWNAREA.CFrame)
+		end
+    	end
+})
+
+local Button = bapTab:CreateButton({
+	Name = "Destroy Kill Brick",
+	Description = nil, -- Creates A Description For Users to know what the button does (looks bad if you use it all the time),
+    	Callback = function()
+		workspace.Map.Classic.KillBrick:Destroy()
+    	end
+})
