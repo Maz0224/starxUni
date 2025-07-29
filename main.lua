@@ -3,7 +3,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "Star Universal",
    Icon = "sparkle", -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-   LoadingTitle = "Universal Hub",
+   LoadingTitle = "📌 • Universal Hub",
    LoadingSubtitle = "by maz24",
    ShowText = "Star GUI", -- for mobile users to unhide rayfield, change if you'd like
    Theme = "Amethyst", -- Check https://docs.sirius.menu/rayfield/configuration/themes
@@ -40,8 +40,24 @@ local Window = Rayfield:CreateWindow({
 -- FUNCTIONS --
 
 local function teleportPlayer(cframe)
-   game.Player.LocalPlayer.Character.HumanoidRootPart.CFrame = cframe
+   game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cframe
 end
+
+-- GUI FUNC --
+
+local function flingTower()
+   while _G.boolFlingTower do
+      for i, v in pairs(game.Workspace.Map.Classic.Tower:GetChildren()) do
+         if v:IsA("BasePart") then
+            teleportPlayer(v.CFrame)
+            task.wait()
+         end
+      end
+   end  
+end
+
+-- BOOLS --
+_G.boolFlingTower = false
 
 -- PLAYER TAB --
 
@@ -72,29 +88,39 @@ local Slider = playerTab:CreateSlider({
    end,
 })
 
--- BUILD A BOAT TAB --
+-- Blocks n' Propa --
+local bapTab = Window:CreateTab("Blocks N' Props", "gamepad-2") -- Title, Image
+local playSec = bapTab:CreateSection("Players")
 
-local babTab = Window:CreateTab("Build A Boat", "gamepad-2") -- Title, Image
-local farmSec = babTab:CreateSection("Farming")
-
-local Toggle = babTab:CreateToggle({
-   Name = "Autofarm 1",
-   CurrentValue = false,
-   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-         
-         local stages = game.Workspace.BoatStages.NormalStages:GetChildren()
-
-         for i, v in ipairs(stages) do
-            if v == #stages then
-               teleportPlayer(game.Workspace.BoatStages.NormalStages.TheEnd.GoldenChest.Cap.Hinge.Part.CFrame)
-               task.wait(15)  
-            else
-               teleportPlayer(v)
-               task.wait(0.25)
-            end
+local Button = bapTab:CreateButton({
+   Name = "Instant Win",
+   Callback = function()
+      if game.Players.LocalPlayer.Team == game:GetService("Teams").Towers then
+            teleportPlayer(game.Workspace.Map.Classic.Button.CFrame)
          end
    end,
 })
 
+local Button = bapTab:CreateButton({
+   Name = "Delete KillBrick",
+   Callback = function()
+      if game.Workspace.Map.Classic.KillBrick then
+            game.Workspace.Map.Classic.KillBrick:Destroy()
+      end
+   end,
+})
+
+local desSec = bapTab:CreateSection("Destroyers")
+
+local Toggle = bapTab:CreateToggle({
+   Name = "Fling Blocks",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+      if game.Players.LocalPlayer.Team == game:GetService("Teams").Destroyer then
+            _G.boolFlingTower = Value
+            flingTower()
+         end 
+   end,
+})
 
