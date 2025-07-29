@@ -37,9 +37,16 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
-local playerTab = Window:CreateTab("Player", "user") -- Title, Image
+-- FUNCTIONS --
 
-local humSec = playerTab:CreateSection("Humanoid")
+local function teleportPlayer(cframe)
+   game.Player.LocalPlayer.Character.HumanoidRootPart.CFrame = cframe
+end
+
+-- PLAYER TAB --
+
+local playerTab = Window:CreateTab("Player", "user") -- Title, Image
+local HumanoidSection = playerTab:CreateSection("Humanoid")
 
 local Slider = playerTab:CreateSlider({
    Name = "Speed",
@@ -49,6 +56,45 @@ local Slider = playerTab:CreateSlider({
    CurrentValue = 16,
    Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
    Callback = function(Value)
-    game.Players.LocalPlayer.Charactee.Humanoid.WalkSpeed = Value
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
    end,
 })
+
+local Slider = playerTab:CreateSlider({
+   Name = "Jump Power",
+   Range = {0, 999},
+   Increment = 1,
+   Suffix = "jump power",
+   CurrentValue = 50,
+   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+   end,
+})
+
+-- BUILD A BOAT TAB --
+
+local babTab = Window:CreateTab("Build A Boat", "gamepad-2") -- Title, Image
+local farmSec = babTab:CreateSection("Farming")
+
+local Toggle = babTab:CreateToggle({
+   Name = "Autofarm 1",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+         
+         local stages = game.Workspace.BoatStages.NormalStages:GetChildren()
+
+         for i, v in ipairs(stages) do
+            if v == #stages then
+               teleportPlayer(game.Workspace.BoatStages.NormalStages.TheEnd.GoldenChest.Cap.Hinge.Part.CFrame)
+               task.wait(15)  
+            else
+               teleportPlayer(v)
+               task.wait(0.25)
+            end
+         end
+   end,
+})
+
+
