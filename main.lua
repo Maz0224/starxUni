@@ -1,4 +1,6 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local players = {}
+local selPlayer
 
 local Window = Rayfield:CreateWindow({
    Name = "Star Universal",
@@ -87,6 +89,44 @@ local Slider = playerTab:CreateSlider({
     game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
    end,
 })
+
+local Dropdown = playerTab:CreateDropdown({
+   Name = "Teleport To Player",
+   Options = {},
+   CurrentOption = {},
+   MultipleOptions = false,
+   Flag = "Dropdown", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(opt)
+         selPlayer = opt[1]
+   end,
+})
+
+local Button = playerTab:CreateButton({
+   Name = "Teleport",
+   Callback = function()
+      teleportPlayer(game.Players:FindFirstChild(selPlayer).Character.HumanoidRootPart.CFrame)
+   end,
+})
+
+game.Players.PlayerAdded:Connect(function(plr)
+     table.insert(players, plr.Name)
+     Dropdown:Refresh(players)
+end)
+
+game.Players.PlayerRemoving:Connect(function(plr)
+    for i, name in ipairs(players) do
+        if name == plr.Name then
+            table.remove(players, i)
+            break
+        end
+    end
+    Dropdown:Refresh(players)
+end)
+
+for _, plr in pairs(game.Players:GetPlayers()) do
+    table.insert(players, plr.Name)
+end
+Dropdown:Refresh(players)
 
 -- Blocks n' Propa --
 local bapTab = Window:CreateTab("Blocks N' Props", "gamepad-2") -- Title, Image
