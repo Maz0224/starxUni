@@ -30,11 +30,22 @@ local Window = Luna:CreateWindow({
 })
 
 Window:CreateHomeTab({
-	SupportedExecutors = {"Delta", "Solara", "Xeno"}, -- A Table Of Executors Your Script Supports. Add strings of the executor names for each executor.
+	SupportedExecutors = {"Delta", "Solara", "Xeno"}, -- A Table Of Executors Your Script Supports. Add strings of the executor i for each executor.
 	DiscordInvite = "1234", -- The Discord Invite Link. Do Not Include discord.gg/ | Only Include the code.
 	Icon = 1, -- By Default, The Icon Is The Home Icon. If You would like to change it to dashboard, replace the interger with 2
 })
 
+-- g bools --
+_G.moneyfarmscam = false
+
+
+-- script functions --
+local function moneyfarmscamfunc()
+	while _G.moneyfarmscam do
+		game:GetService("ReplicatedStorage").Reward:FireServer("notepad")
+		task.wait()
+	end
+end
 
 -- vars --
 local player = game.Players.LocalPlayer
@@ -158,7 +169,15 @@ local Button = scamTab:CreateButton({
     	end
 })
 
-scamTab:CreateDivider()
+scamTab:CreateSection("Player")
+
+local Button = scamTab:CreateButton({
+	Name = "Unfreeze Player",
+	Description = nil, -- Creates A Description For Users to know what the button does (looks bad if you use it all the time),
+    	Callback = function()
+			game:GetService("ReplicatedStorage").FreezePlr:FireServer(false)
+    	end
+})
 
 local Button = scamTab:CreateButton({
 	Name = "Energy Drink",
@@ -167,3 +186,34 @@ local Button = scamTab:CreateButton({
 			game:GetService("ReplicatedStorage").Passoffs.Energydrink:FireServer(true)
     	end
 })
+
+scamTab:CreateSection("Computer")
+
+local Button = scamTab:CreateButton({
+	Name = "Dial",
+	Description = nil, -- Creates A Description For Users to know what the button does (looks bad if you use it all the time),
+    	Callback = function()
+			game:GetService("ReplicatedStorage").Passoffs.Dialedup:FireServer(true)
+    	end
+})
+
+scamTab:CreateSection("Money")
+
+local Button = scamTab:CreateButton({
+	Name = "Give Money",
+	Description = nil, -- Creates A Description For Users to know what the button does (looks bad if you use it all the time),
+    	Callback = function()
+			game:GetService("ReplicatedStorage").Reward:FireServer("notepad")
+    	end
+})
+
+local Toggle = scamTab:CreateToggle({
+	Name = "Infinite Money",
+	Description = nil,
+	CurrentValue = false,
+    	Callback = function(Value)
+			_G.moneyfarmscam = Value
+			moneyfarmscamfunc()
+    	end
+}, "Toggle") -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+
