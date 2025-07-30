@@ -35,7 +35,10 @@ Window:CreateHomeTab({
 	Icon = 1, -- By Default, The Icon Is The Home Icon. If You would like to change it to dashboard, replace the interger with 2
 })
 
+
+-- vars --
 local player = game.Players.LocalPlayer
+local scamMsg
 
 -- functions --
 local function tp(cf)
@@ -108,5 +111,59 @@ local Button = bapTab:CreateButton({
 	Description = nil, -- Creates A Description For Users to know what the button does (looks bad if you use it all the time),
     	Callback = function()
 		workspace.Map.Classic.KillBrick:Destroy()
+    	end
+})
+
+local scamTab = Window:CreateTab({
+    Name = "☎️ scam call center simulator",
+    Icon = "view_in_ar",
+    ImageSource = "Material",
+    ShowTitle = true
+})
+
+scamTab:CreateSection("Text")
+
+local Input = scamTab:CreateInput({
+	Name = "Say Anything",
+	Description = nil,
+	PlaceholderText = "Text",
+	CurrentValue = "", -- the current text
+	Numeric = false, -- When true, the user may only type numbers in the box (Example walkspeed)
+	MaxCharacters = nil, -- if a number, the textbox length cannot exceed the number
+	Enter = false, -- When true, the callback will only be executed when the user presses enter.
+    	Callback = function(Text)
+			scamMsg = Text
+    	end
+}, "Input") -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+
+scamTab:CreateDivider()
+
+local Button = scamTab:CreateButton({
+	Name = "Annouce It",
+	Description = "CS", -- Creates A Description For Users to know what the button does (looks bad if you use it all the time),
+    	Callback = function()
+local Remote = game:GetService("ReplicatedStorage").Announcement
+firesignal(Remote.OnClientEvent, table.unpack({
+    [1] = game.Players.LocalPlayer.Name,
+    [2] = scamMsg,
+}))			
+    	end
+})
+
+local Button = scamTab:CreateButton({
+	Name = "Say It!",
+	Description = "SS", -- Creates A Description For Users to know what the button does (looks bad if you use it all the time),
+    	Callback = function()
+		game:GetService("ReplicatedStorage").DialogueClicked:FireServer(scamMsg)
+    	end
+})
+
+scamTab:CreateDivider()
+
+local Button = scamTab:CreateButton({
+	Name = "Energy Drink",
+	Description = nil, -- Creates A Description For Users to know what the button does (looks bad if you use it all the time),
+    	Callback = function()
+			game:GetService("ReplicatedStorage").Passoffs.Energydrink:FireServer(true)
     	end
 })
